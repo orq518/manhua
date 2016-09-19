@@ -61,6 +61,8 @@ class HomePage(object):
             # print('\n##japan:',japan)
             contentdata={}
             href=binner.get('href')#链接
+            if href.endswith('.html'):
+                continue
             title=binner.get('title')#标题
             img=binner.find("img",{"class":"cover"}).get('src')#图片
 
