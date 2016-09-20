@@ -42,6 +42,8 @@ class HomePage(object):
         animation=soup.find("section",{"class":"animation"})#动画专区
         homedata["animation"]=self.get_home_animation(animation)
 
+        wltj=soup.find("ul",{"class":"comic-list col-3 no-tag recommend-list"})#无良推荐
+        homedata["recommendlist"]=self.get_home_wl_recommend(wltj)
 
         data={}
         data["state"]="0"
@@ -66,9 +68,9 @@ class HomePage(object):
             title=binner.get('title')#标题
             img=binner.find("img",{"class":"cover"}).get('src')#图片
 
-            print('\n##binner_title:',title)
-            print('##href:',href)
-            print('##img:',img)
+            # print('\n##binner_title:',title)
+            # print('##href:',href)
+            # print('##img:',img)
 
             contentdata["title"]=title
             contentdata["img"]=img
@@ -271,3 +273,38 @@ class HomePage(object):
             contentdata["href"]=href
             data.append(contentdata)
         return data
+
+
+     #无良推荐
+    def get_home_wl_recommend(self,wl_recommend):
+        # print('\n##无良推荐:',wl_recommend)
+        data=[]
+        moreContent=wl_recommend.find_all("a",{"class":"comic-link"})#日漫内容
+        for wl in moreContent:
+            # print('\n##japan:',japan)
+            contentdata={}
+            href=wl.get('href')#链接
+            dataid=wl.get('data-id')#id
+            datatraceid=wl.get('data-trace-id')#id
+            content=wl.find("div",{"class":"comic-content"})
+            title=content.find("strong",{"class":"comic-title"}).text#书名
+            desc=content.find("small",{"class":"comic-desc"}).text#描述
+
+            covercontent=wl.find("div",{"class":"comic-cover"})
+            img=covercontent.find("img",{"class":"cover-image"}).get('src')
+
+            # print('\n##无良推荐title:',title)
+            # print('##dataid:',dataid)
+            # print('##desc:',desc)
+            # print('##img:',img)
+            # print('##href:',href)
+
+            contentdata["title"]=title
+            contentdata["dataid"]=dataid
+            contentdata["desc"]=desc
+            contentdata["img"]=img
+            contentdata["href"]=href
+            contentdata["datatraceid"]=datatraceid
+            data.append(contentdata)
+        return data
+
