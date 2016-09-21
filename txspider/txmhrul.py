@@ -3,6 +3,14 @@
 
 #漫画首页
 urlhome="http://m.ac.qq.com/"
+
+#漫画章节列表
+urlchapterList="comic/chapterList/id/{}"
+
+#漫画章节详情列表http://m.ac.qq.com/chapter/index/id/518335/cid/115
+urlchapterDetail="chapter/index/id/{}/cid/{}"
+
+
 #漫画列表--独家
 urldj="http://m.ac.qq.com/category/listAll/type/dj/rank/upt?page=1&pageSize=15&style=items&t=1473842538590"
 #漫画列表--条漫
