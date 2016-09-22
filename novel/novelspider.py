@@ -5,7 +5,7 @@ import urllib
 import time
 from bs4 import BeautifulSoup
 import re
-
+import json
 
 class NovelSpider(object):
     def __init__(self):
@@ -98,7 +98,7 @@ class NovelSpider(object):
     def getNovelCharpterList(self,index):
 
         # url =urlhome+"/i/50076/"
-        url=self.urlhome+"/i/"+index+"/"
+        url=self.urlhome+"/i/"+str(index)+"/"
 
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
@@ -151,7 +151,7 @@ class NovelSpider(object):
     #文章详情
     def getNovelDetail(self,index):
         print('\n开始下载内容')
-        url=self.urlhome+"/c/"+index+"/"
+        url=self.urlhome+"/c/"+str(index)+"/"
         # url =urlhome+detailurl
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
@@ -196,7 +196,13 @@ class NovelSpider(object):
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
         the_page = response.read()
-        print('\nthe_page:',the_page)
+        data=the_page.decode("utf-8")
+        # print('\ndata:',data)
+        jsondata = json.loads(data)
+        datalist=[]
+        datalist=jsondata.get("Novels")
+        print('\nhjson:',datalist)
+        return datalist
 
  # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=10&listype=latest&_=1474445188394
     # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=2&listype=finish&_=1474445335160
@@ -204,22 +210,30 @@ class NovelSpider(object):
     #日轻中的   latest:最新更新  hot：热门推荐   finish完结
     def getRQ(self,type,index):
 
-        url =self.urlhome+"/API/HTML5.ashx?op=jpnovels&index="+index+"&listype="+type+"&_="+str(int(time.time()))
+        url =self.urlhome+"/API/HTML5.ashx?op=jpnovels&index="+str(index)+"&listype="+type+"&_="+str(int(time.time()))
         print('\nurl:',url)
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
         the_page = response.read()
-
-        print('\nthe_page:',the_page)
-
+        data=the_page.decode("utf-8")
+        # print('\ndata:',data)
+        jsondata = json.loads(data)
+        datalist=[]
+        datalist=jsondata
+        return datalist
         #更新
-    def getUpdata(self,index):
-        url =self.urlhome+"/API/HTML5.ashx?op=latest&index="+index+"&_="+str(int(time.time()))
+    def getUpdate(self,index):
+        url =self.urlhome+"/API/HTML5.ashx?op=latest&index="+str(index)+"&_="+str(int(time.time()))
         print('\nurl:',url)
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
         the_page = response.read()
-        print('\nthe_page:',the_page)
+        data=the_page.decode("utf-8")
+        # print('\ndata:',data)
+        jsondata = json.loads(data)
+        datalist=[]
+        datalist=jsondata
+        return datalist
         # http://m.sfacg.com/API/HTML5.ashx?op=latest&index=1&_=1474442424293
 
 

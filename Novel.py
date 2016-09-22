@@ -24,13 +24,6 @@ def gethomedata():
 @app.route('/rank/<type>', methods=['GET', 'POST'])
 def getRanking(type):
 
-    # if request.method == 'POST':
-    #     id=request.args.get('id')
-    #     print('post--id:',id)
-    # else:
-    #     id=request.args.get('id')
-    #     print('get--id:',id)
-
     state="0"
     msg="成功"
     datalist=homedate.getRanking(type)
@@ -38,17 +31,12 @@ def getRanking(type):
 
 
 #文章的章节列表
-@app.route('/getNovelCharpterList/<id>', methods=['GET', 'POST'])
-def getNovelCharpterList(id):
-
-    # if request.method == 'POST':
-    #     id=request.args.get('id')
-    #     print('post--id:',id)
-    # else:
-    #     id=request.args.get('id')
-    #     print('get--id:',id)
-    # http://m.ac.qq.com/chapter/index/id/518335/cid/115
-    # return chapterlistdata.getChapterDetailData("518335","115")
+@app.route('/getNovelCharpterList/', methods=['GET', 'POST'])
+def getNovelCharpterList():
+    id=""
+    if request.method == 'POST':
+        id=request.values.get('id')
+        print('post--id:',id)
     state="0"
     msg="成功"
     datalist=homedate.getNovelCharpterList(id)
@@ -56,18 +44,12 @@ def getNovelCharpterList(id):
 
 
 #文章详情
-@app.route('/getNovelDetail/<id>', methods=['GET', 'POST'])
-def getNovelDetail(id):
-
-    # if request.method == 'POST':
-    #     id=request.args.get('id')
-    #     print('post--id:',id)
-    # else:
-    #     id=request.args.get('id')
-    #     print('get--id:',id)
-    # http://m.ac.qq.com/chapter/index/id/518335/cid/115
-    # chapterlistdata=homedate.getNovelDetail()
-    # return chapterlistdata.getChapterDetailData("518335","115")
+@app.route('/getNovelDetail/', methods=['GET', 'POST'])
+def getNovelDetail():
+    id=""
+    if request.method == 'POST':
+        id=request.values.get('id')
+        print('post--id:',id)
     state="0"
     msg="成功"
     datalist=homedate.getNovelDetail(id)
@@ -75,22 +57,49 @@ def getNovelDetail(id):
 
 
 
-# #搜索
-# @app.route('/search/', methods=['GET', 'POST'])
-# def search():
-#     homedate.search()
-#
-# #日轻列表 latest:最新更新  hot：热门推荐   finish完结
-# @app.route('/rq/', methods=['GET', 'POST'])
-# def getChapterListData():
-#     homedate.getRQ("latest","1")
-# #更新
-# @app.route('/getUpdata/', methods=['GET', 'POST'])
-# def getUpdata():
-#     homedate.getUpdata()
+#搜索
+@app.route('/search/', methods=['GET', 'POST'])
+def search():
+    key=""
+    if request.method == 'POST':
+        key=request.values.get('key')
+        print('post--key:',key)
 
 
-# @app.route('/login', methods=['POST', 'GET'])
+    state="0"
+    msg="成功"
+    datalist=homedate.search(key)
+    return creatJson(state,msg,datalist)
+
+#日轻列表 latest:最新更新  hot：热门推荐   finish完结
+@app.route('/rq/<type>', methods=['GET', 'POST'])
+def getChapterListData(type):
+
+    index=""
+    if request.method == 'POST':
+        index=request.values.get('index')
+        print('post--index:',index)
+    state="0"
+    msg="成功"
+    datalist=homedate.getRQ(type,index)
+    return creatJson(state,msg,datalist)
+
+
+#更新
+@app.route('/getUpdate/', methods=['GET', 'POST'])
+def getUpdate():
+    index=0
+    if request.method == 'POST':
+        index=request.values.get('index')
+        print('post--index:',index)
+    state="0"
+    msg="成功"
+    datalist=homedate.getUpdate(index)
+    return creatJson(state,msg,datalist)
+    # http://rs.sfacg.com/web/novel/images/NovelCover/Big/2016/09/3340225b-8b61-474c-8d09-341a9dacf055.jpg
+
+
+@app.route('/login', methods=['POST', 'GET'])
 # def login():
 #     error = None
 #     if request.method == 'POST':
@@ -105,11 +114,11 @@ def getNovelDetail(id):
 
 def creatJson(state,msg,datalist):
     data={}
-    data["state"]="0"
-    data["msg"]="成功"
+    data["state"]=state
+    data["msg"]=msg
     data["data"]=datalist
     jsondata=json.encode(data,"utf8")
-    print('\n##生成json数据:\n',jsondata)
+    # print('\n##生成json数据:\n',jsondata)
     return jsondata
 
 

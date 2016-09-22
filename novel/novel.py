@@ -1,6 +1,6 @@
 # coding:utf-8
 # author： ou
-
+#-coding:UTF8-*-
 import urllib.request
 from bs4 import BeautifulSoup
 from txspider import  txmhrul
@@ -8,7 +8,10 @@ import demjson as json
 import re
 import urllib
 import time
-
+import requests
+import binascii
+import struct
+import json
 
 
 urlhome="http://m.sfacg.com"
@@ -162,6 +165,7 @@ def getNovelDetail(detailurl):
             print('\n编码报错')
     except:
            print('\n\n出错了！')
+
 #搜索
 def search(key):
     key=urllib.request.quote(key)
@@ -171,6 +175,17 @@ def search(key):
     response = urllib.request.urlopen(req)
     the_page = response.read()
     print('\nthe_page:',the_page)
+    sss=the_page.decode("utf-8")
+
+    hjson = json.loads(sss)
+
+    print('\nhjson:',hjson.get("Novels"))
+
+
+    # r = requests.get('https://github.com/timeline.json')
+    # print('\n\nr.json()：'+r.json())
+
+
 
 
 if __name__ == '__main__':
@@ -183,8 +198,8 @@ if __name__ == '__main__':
     # getRanking("bm")
 
     # getUpdata()
-    getNovelHome()
+    # getNovelHome()
     # getNovelCharpterList("/i/50076/")
     # getNovelDetail("/c/807732/")
 
-    # search("热血")
+    search("热血")
