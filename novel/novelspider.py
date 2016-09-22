@@ -3,8 +3,8 @@
 import urllib.request
 import urllib
 import time
-
 from bs4 import BeautifulSoup
+import re
 
 
 class NovelSpider(object):
@@ -25,29 +25,40 @@ class NovelSpider(object):
         soup = BeautifulSoup(the_page, 'html.parser')
         # print('soup:',soup)
         book_Contents=soup.find_all("div",{"class":"book_Content_style"})
+
+        homedata=[]
         for book_Content in book_Contents:
+
+            lanmu={}
             book_Content_title=book_Content.find("div",{"class":"book_bk_qs1 book_Content_title"})
+            content_title=book_Content_title.text;
+
             print('\n栏目标题:',book_Content_title.text)
+
             books=book_Content.find_all("a")
+            lanmu["title"]=content_title
+            booksList=[]
             for book in books:
+                bookmap={}
                 title=book.text
                 href=book.get("href")
                 src=book.find("img").get("src")
+                id=re.findall(r'\d+',href)[0]
+                bookmap["title"]=title
+                bookmap["href"]=href
+                bookmap["src"]=src
+                bookmap["id"]=id
+
+                booksList.append(bookmap)
                 print('\ntitle:',title)
                 print('href:',href)
                 print('src:',src)
+                print('id:',id)
+            lanmu["books"]=booksList
+            homedata.append(lanmu)
+        return  homedata
 
-    # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=10&listype=latest&_=1474445188394
-    # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=2&listype=finish&_=1474445335160
-    # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=1&listype=hot&_=1474445451544
-    #日轻中的   latest:最新更新  hot：热门推荐   finish完结
-    def getRQ(self,type,index):
-        url =self.urlhome+"/API/HTML5.ashx?op=jpnovels&index="+index+"&listype="+type+"&_="+str(int(time.time()))
-        print('\nurl:',url)
-        req = urllib.request.Request(url, headers = self.headers)
-        response = urllib.request.urlopen(req)
-        the_page = response.read()
-        print('\nthe_page:',the_page)
+
 
 
     #排行中的这些栏目类型--original:原创 sale 热销 jp：日轻 new：新书 ticket：月票 bm：收藏
@@ -64,22 +75,30 @@ class NovelSpider(object):
 
         book_list=soup.find_all("div",{"class":"Content_Frame book_list"})
         # print('##book_list:',book_list)
+        data=[]
         for book in book_list:
+            bookmap={}
             bookherf=book.parent.get("href")
             src=book.find("img").get("src")
             title=book.find("span",{"id":"book_title"}).text
+            bookmap["title"]=title
+            bookmap["href"]=bookherf
+            bookmap["src"]=src
+            id=re.findall(r'\d+',bookherf)[0]
+            bookmap["id"]=id
+            data.append(bookmap)
             # print('\n##title:',title)
             # print('##bookherf:',bookherf)
             # print('##src:',src)
 
+        return  data
+
 
     #文章的章节列表
-    def getNovelCharpterList(self,herf):
+    def getNovelCharpterList(self,index):
 
         # url =urlhome+"/i/50076/"
-        url=herf
-        if herf.startswith(self.urlhome)==False:
-            url =self.urlhome+herf
+        url=self.urlhome+"/i/"+index+"/"
 
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
@@ -91,29 +110,48 @@ class NovelSpider(object):
         list_menu_title=soup.find_all("div",{"class":"mulu"})
         # print('list_menu_title:',list_menu_title)
         mulu_list=soup.find_all("ul",{"class":"mulu_list"})
-        # print('list_Content:',mulu_list)
+        print('list_Content:',mulu_list)
 
+        data=[]
+        menuTitleList=[]
         for menu_title in list_menu_title:
-            print('text:',menu_title.text)
+            title=menu_title.text;
+            menuTitleList.append(title)
+            print('text:',title)
+            print('list长度:',len(menuTitleList))
 
+        index=0
         for menu in mulu_list:
+            charpterMap={}
             charpter=menu.find_all("a")
+            print('#title:',menuTitleList[index])
+            print('#index:',index)
+            charpterMap["title"]=menuTitleList[index]
+            index+=1
+            charpterList=[]
             for c in charpter:
+                cMap={}
                 href=c.get("href")
                 title=c.find("li").text
+                id=re.findall(r'\d+',href)[0]
+                cMap["id"]=id
+                cMap["href"]=href
+                cMap["title"]=title
+                charpterList.append(cMap)
                 print('\nhref:',href)
                 print('title:',title)
                 # getNovelDetail(href)
+            charpterMap["charpter"]=charpterList
+            data.append(charpterMap)
+        return  data
 
 
 
 
     #文章详情
-    def getNovelDetail(self,detailurl):
+    def getNovelDetail(self,index):
         print('\n开始下载内容')
-        url=detailurl
-        if detailurl.startswith(self.urlhome)==False:
-            url =self.urlhome+detailurl
+        url=self.urlhome+"/c/"+index+"/"
         # url =urlhome+detailurl
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
@@ -144,6 +182,12 @@ class NovelSpider(object):
                 print('\n编码报错')
         except:
             print('\n\n出错了！')
+
+        return contentAll
+
+
+
+    #####============以下几个接口可以通过程序自己调用api=======================
     #搜索
     def search(self,key):
         key=urllib.request.quote(key)
@@ -154,6 +198,19 @@ class NovelSpider(object):
         the_page = response.read()
         print('\nthe_page:',the_page)
 
+ # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=10&listype=latest&_=1474445188394
+    # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=2&listype=finish&_=1474445335160
+    # http://m.sfacg.com/API/HTML5.ashx?op=jpnovels&index=1&listype=hot&_=1474445451544
+    #日轻中的   latest:最新更新  hot：热门推荐   finish完结
+    def getRQ(self,type,index):
+
+        url =self.urlhome+"/API/HTML5.ashx?op=jpnovels&index="+index+"&listype="+type+"&_="+str(int(time.time()))
+        print('\nurl:',url)
+        req = urllib.request.Request(url, headers = self.headers)
+        response = urllib.request.urlopen(req)
+        the_page = response.read()
+
+        print('\nthe_page:',the_page)
 
         #更新
     def getUpdata(self,index):

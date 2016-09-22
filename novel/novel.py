@@ -175,7 +175,7 @@ def search(key):
 
 if __name__ == '__main__':
     # original:原创 sale 热销 jp：日轻 new：新书 ticket：月票 bm：收藏
-    getRanking("original")
+    # getRanking("original")
     # getRanking("sale")
     # getRanking("jp")
     # getRanking("new")
@@ -183,7 +183,7 @@ if __name__ == '__main__':
     # getRanking("bm")
 
     # getUpdata()
-    # getNovelHome()
+    getNovelHome()
     # getNovelCharpterList("/i/50076/")
     # getNovelDetail("/c/807732/")
 
