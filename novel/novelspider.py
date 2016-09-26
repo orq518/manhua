@@ -236,5 +236,22 @@ class NovelSpider(object):
         return datalist
         # http://m.sfacg.com/API/HTML5.ashx?op=latest&index=1&_=1474442424293
 
+    def getGirlsData(self,page):
+        key=urllib.request.quote("福利")
+        url="http://gank.io/api/data/"+key+"/20/"+str(page)
+        # url =self.urlhome+"/API/HTML5.ashx?op=latest&index="+str(index)+"&_="+str(int(time.time()))
+        print('\nurl:',url)
+        req = urllib.request.Request(url, headers = self.headers)
+        response = urllib.request.urlopen(req)
+        the_page = response.read()
+        # print('the_page:',the_page)
+        data=the_page.decode("utf-8")
+        # print('data:',data)
+        jsondata = json.loads(data)
+        datalist=[]
+        datalist=jsondata.get("results")
+        # print('\nhjson:',datalist)
+        return datalist
+
 
 

@@ -98,6 +98,14 @@ def getUpdate():
     return creatJson(state,msg,datalist)
     # http://rs.sfacg.com/web/novel/images/NovelCover/Big/2016/09/3340225b-8b61-474c-8d09-341a9dacf055.jpg
 
+#美女
+@app.route('/getGirlsData/<page>', methods=['GET', 'POST'])
+def getGirlsData(page):
+    state="0"
+    msg="成功"
+    datalist=homedate.getGirlsData(page)
+    return creatJson(state,msg,datalist)
+
 
 @app.route('/login', methods=['POST', 'GET'])
 # def login():
