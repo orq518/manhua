@@ -240,7 +240,6 @@ class NovelSpider(object):
         key=urllib.request.quote("福利")
         url="http://gank.io/api/data/"+key+"/20/"+str(page)
         # url =self.urlhome+"/API/HTML5.ashx?op=latest&index="+str(index)+"&_="+str(int(time.time()))
-        print('\nurl:',url)
         req = urllib.request.Request(url, headers = self.headers)
         response = urllib.request.urlopen(req)
         the_page = response.read()
@@ -251,6 +250,63 @@ class NovelSpider(object):
         datalist=[]
         datalist=jsondata.get("results")
         # print('\nhjson:',datalist)
+        return datalist
+
+    #http://baobab.wandoujia.com/api/v2/feed?num=1&udid=26868b32e808498db32fd51fb422d00175e179df&vc=83
+    #num为1返回一天的精选，为2返回两条的精选
+    def getRecommendVideo(self,num):
+        key=urllib.request.quote("福利")
+        url="http://baobab.wandoujia.com/api/v2/feed?num="+str(num)+"&udid=26868b32e808498db32fd51fb422d00175e179df&vc=83"
+        print('\nurl:',url)
+        req = urllib.request.Request(url, headers = self.headers)
+        response = urllib.request.urlopen(req)
+        the_page = response.read()
+        # print('the_page:',the_page)
+        data=the_page.decode("utf-8")
+        # print('data:',data)
+        jsondata = json.loads(data)
+        datalist=[]
+        datalist=jsondata.get("issueList")
+        # print('\nhjson:',datalist)
+        return datalist
+
+    #http://baobab.wandoujia.com/api/v2/categories?udid=26868b32e808498db32fd51fb422d00175e179df&vc=83
+    #获取分类
+    def getVideoCategories(self):
+        url="http://baobab.wandoujia.com/api/v2/categories?udid=26868b32e808498db32fd51fb422d00175e179df&vc=83"
+        print('\nurl:',url)
+        req = urllib.request.Request(url, headers = self.headers)
+        response = urllib.request.urlopen(req)
+        the_page = response.read()
+        # print('the_page:',the_page)
+        data=the_page.decode("utf-8")
+        # print('data:',data)
+        jsondata = json.loads(data)
+        datalist=[]
+        datalist=jsondata
+        # print('\nhjson:',datalist)
+        return datalist
+
+    #api/v3/videos?strategy=date&udid=26868b32e808498db32fd51fb422d00175e179df&vc=83&categoryName=%E8%90%8C%E5%AE%A0
+    #"date",
+    #"26868b32e808498db32fd51fb422d00175e179df",
+    #"83",
+    #categoryName
+    #获取单个分类的视频
+    def getSingelCategory(self,category):
+        category=urllib.request.quote(category)
+        url="http://baobab.wandoujia.com/api/v3/videos?strategy=date&udid=26868b32e808498db32fd51fb422d00175e179df&vc=83&categoryName="+category
+        print('\nurl:',url)
+        req = urllib.request.Request(url, headers = self.headers)
+        response = urllib.request.urlopen(req)
+        the_page = response.read()
+        print('the_page:',the_page)
+        data=the_page.decode("utf-8")
+        # print('data:',data)
+        jsondata = json.loads(data)
+        datalist=[]
+        datalist=jsondata.get("itemList")
+        print('\nhjson:',datalist)
         return datalist
 
 

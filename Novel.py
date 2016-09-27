@@ -107,7 +107,37 @@ def getGirlsData(page):
     return creatJson(state,msg,datalist)
 
 
-@app.route('/login', methods=['POST', 'GET'])
+
+#视频  每日精选
+@app.route('/getRecommendVideo/<page>', methods=['GET', 'POST'])
+def getRecommendVideo(page):
+    state="0"
+    msg="成功"
+    datalist=homedate.getRecommendVideo(page)
+    return creatJson(state,msg,datalist)
+
+#视频分类
+@app.route('/getGirlsData/', methods=['GET', 'POST'])
+def getVideoCategories():
+    state="0"
+    msg="成功"
+    datalist=homedate.getVideoCategories()
+    return creatJson(state,msg,datalist)
+
+#获取单个分类的视频
+@app.route('/getSingelCategories/', methods=['GET', 'POST'])
+def getSingelCategory():
+    key=""
+    if request.method == 'POST':
+        key=request.values.get('category')
+        print('post--key:',key)
+    state="0"
+    msg="成功"
+    datalist=homedate.getSingelCategory(key)
+    return creatJson(state,msg,datalist)
+
+
+#@app.route('/login', methods=['POST', 'GET'])
 # def login():
 #     error = None
 #     if request.method == 'POST':
