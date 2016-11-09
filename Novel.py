@@ -162,7 +162,7 @@ def creatJson(state,msg,datalist):
 
 @app.route('/')
 def hello_world():
-    return "hello world"
+    return homedate.test()
 
 if __name__ == '__main__':
     app.run()

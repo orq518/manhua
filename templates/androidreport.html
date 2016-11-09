@@ -1,0 +1,21 @@
+<html>
+  <head>
+    {% if title %}
+    <title>{{ title }} - 111</title>
+    {% else %}
+    <title>{{ title }}--222</title>
+    {% endif %}
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+</head>
+<body>
+<div id="wrapper">
+  <div id="info">
+    <div id="info-content">
+      <a href="/static/androidTests.zip">
+      <h1><strong>报告地址下载</strong>{{ title }}</h1></a>
+    </div>
+  </div>
+</div><!-- #wrapper -->
+</body>
+</html>

@@ -310,4 +310,16 @@ class NovelSpider(object):
         return datalist
 
 
+    def test(self):
+        url="http://m.txt99.cc/readbook/39014.html"
+        # url =urlhome+detailurl
+        req = urllib.request.Request(url, headers = self.headers)
+        response = urllib.request.urlopen(req)
+        the_page = response.read()
+        print('the_page:',the_page)
+        soup = BeautifulSoup(the_page, 'html.parser')
+        print('\n\nsoup'+soup)
+
+
+
 
